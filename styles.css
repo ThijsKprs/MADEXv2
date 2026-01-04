@@ -1,0 +1,562 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'LEDLIGHT', Arial, sans-serif;
+    background: #333333;
+    min-height: 100vh;
+    color: #333333;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Interactieve Grid Achtergrond */
+#gridCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.content-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.header {
+    padding: 2rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    mix-blend-mode: difference;
+}
+
+.footer {
+    color: #FFFFFF;
+    padding: 2rem 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+    mix-blend-mode: difference;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.footer2 {
+    color: #FFFFFF;
+    padding: 2rem 0;
+    bottom: 0;
+    z-index: 100;
+    mix-blend-mode: difference;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+    color: #ffffff;
+}
+
+.logo-img {
+    width: 400px;
+    height: auto;
+    object-fit: contain;
+}
+
+.logo span {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.header-info h1 {
+    font-size: 2rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.header-info p {
+    color: #ffffff;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: center;
+    justify-content: center
+}
+
+.gallery-container {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 2rem 3rem;
+}
+
+.gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 20rem;
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.photo-card {
+    border-radius: 0px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.photo-card:hover {
+    transform: translateY(-8px);
+}
+
+.photo-wrapper {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .photo-wrapper {
+        height: auto;
+        aspect-ratio: 4/3;
+    }
+}
+
+.photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.photo-card:hover .photo-img {
+    transform: scale(1.05);
+}
+
+/* Glitch Canvas voor data swap effect */
+.glitch-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.surprise-btn {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    background: none;
+    z-index: 20;
+}
+
+.surprise-btn:hover {
+    transform: scale(1.1) rotate(180deg);
+}
+
+.surprise-btn:active {
+    transform: scale(0.95) rotate(180deg);
+}
+
+.photo-caption {
+    font-size: 1rem;
+    color: #CCCCCC;
+    line-height: 1.5;
+    text-align: left;
+    font-weight: 400;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.load-more {
+    display: block;
+    background: none;
+    box-shadow: none;
+    border: none;
+    margin: 0 auto;
+    padding: 1rem 3rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #CCCCCC;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'LEDLIGHT', Arial, sans-serif;
+}
+
+.load-more:hover {
+    transform: translateY(-3px);
+}
+
+.load-more:active {
+    transform: translateY(-1px);
+}
+
+.aboutText p {
+    margin: 4rem 0;
+    line-height: 1.6;
+    font-size: 1rem;
+    color: #CCCCCC;
+    text-align: center;
+    font-family:'Courier New', Courier, monospace
+}
+
+/* About button (rechts) */
+.ui-btn {
+    --btn-padding: 15px 20px;
+    --btn-transition: .3s;
+    --btn-letter-spacing: .1rem;
+    --btn-animation-duration: 1.2s;
+    --hover-btn-color: #FFFFFF;
+    --default-btn-color: #CCCCCC;
+    --font-size: 16px;
+    --font-weight: 400;
+    --font-family: Courier New, Courier, monospace;
+    
+    position: fixed;
+    top: 5rem;
+    right: 19rem;
+    z-index: 200;
+    mix-blend-mode: difference;
+    
+    box-sizing: border-box;
+    padding: var(--btn-padding);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--default-btn-color);
+    font: var(--font-weight) var(--font-size) var(--font-family);
+    background: var(--btn-default-bg);
+    border: none;
+    cursor: pointer;
+    transition: var(--btn-transition);
+    overflow: hidden;
+    box-shadow: var(--btn-shadow);
+}
+
+.ui-btn span {
+    letter-spacing: var(--btn-letter-spacing);
+    transition: var(--btn-transition);
+    box-sizing: border-box;
+    position: relative;
+    background: inherit;
+}
+
+.ui-btn span::before {
+    box-sizing: border-box;
+    position: absolute;
+    content: "";
+    background: inherit;
+}
+
+.ui-btn:hover, .ui-btn:focus {
+    background: var(--btn-hover-bg);
+}
+
+.ui-btn:hover span, .ui-btn:focus span {
+    color: var(--hover-btn-color);
+}
+
+.ui-btn:hover span::before, .ui-btn:focus span::before {
+    animation: chitchat linear both var(--btn-animation-duration);
+}
+
+.background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video covers the entire screen */
+    z-index: -1; /* Places the video behind other content */
+    opacity: 0.1;
+}
+
+/* Scroll to top button (links) */
+.scroll-top-btn {
+    --btn-padding: 15px 20px;
+    --btn-transition: .3s;
+    --btn-letter-spacing: .1rem;
+    --btn-animation-duration: 1.2s;
+    --hover-btn-color: #FFFFFF;
+    --default-btn-color: #CCCCCC;
+    --font-size: 16px;
+    --font-weight: 400;
+    --font-family: Courier New, Courier, monospace;
+    
+    position: fixed;
+    top: 5rem;
+    left: 19rem;
+    z-index: 200;
+    mix-blend-mode: difference;
+    
+    box-sizing: border-box;
+    padding: var(--btn-padding);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--default-btn-color);
+    font: var(--font-weight) var(--font-size) var(--font-family);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--btn-transition);
+    overflow: hidden;
+}
+
+.scroll-top-btn span {
+    letter-spacing: var(--btn-letter-spacing);
+    transition: var(--btn-transition);
+    box-sizing: border-box;
+    position: relative;
+    background: inherit;
+}
+
+.scroll-top-btn span::before {
+    box-sizing: border-box;
+    position: absolute;
+    content: "";
+    background: inherit;
+}
+
+.scroll-top-btn:hover, .scroll-top-btn:focus {
+    transform: translateY(-3px);
+}
+
+.scroll-top-btn:hover span, .scroll-top-btn:focus span {
+    color: var(--hover-btn-color);
+}
+
+.scroll-top-btn:hover span::before, .scroll-top-btn:focus span::before {
+    animation: chitchat linear both var(--btn-animation-duration);
+}
+
+@keyframes chitchat {
+    0% {
+      content: "#";
+    }
+  
+    5% {
+      content: ".";
+    }
+  
+    10% {
+      content: "^{";
+    }
+  
+    15% {
+      content: "-!";
+    }
+  
+    20% {
+      content: "#$_";
+    }
+  
+    25% {
+      content: "№:0";
+    }
+  
+    30% {
+      content: "#{+.";
+    }
+  
+    35% {
+      content: "@}-?";
+    }
+  
+    40% {
+      content: "?{4@%";
+    }
+  
+    45% {
+      content: "=.,^!";
+    }
+  
+    50% {
+      content: "?2@%";
+    }
+  
+    55% {
+      content: "\;1}]";
+    }
+  
+    60% {
+      content: "?{%:%";
+      right: 0;
+    }
+  
+    65% {
+      content: "|{f[4";
+      right: 0;
+    }
+  
+    70% {
+      content: "{4%0%";
+      right: 0;
+    }
+  
+    75% {
+      content: "'1_0<";
+      right: 0;
+    }
+  
+    80% {
+      content: "{0%";
+      right: 0;
+    }
+  
+    85% {
+      content: "]>'";
+      right: 0;
+    }
+  
+    90% {
+      content: "4";
+      right: 0;
+    }
+  
+    95% {
+      content: "2";
+      right: 0;
+    }
+  
+    100% {
+      content: "";
+      right: 0;
+    }
+}
+
+/* Responsieve aanpassing voor mobiel */
+@media (max-width: 768px) {
+    .gallery {
+        gap: 20rem;
+    }
+    
+    .header-info h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-info p {
+        font-size: 1rem;
+    }
+    
+    .logo-img {
+        width: 200px;
+        height: auto;
+    }
+    
+    .logo span {
+        font-size: 1.2rem;
+    }
+    
+    .ui-btn {
+        top: 5.8rem;
+        right: 6rem;
+        --font-size: 10px;
+        --btn-padding: 12px 16px;
+    }
+    
+    .scroll-top-btn {
+        top: 5.8rem;
+        left: 6rem;
+        --font-size: 10px;
+        --btn-padding: 12px 16px;
+    }
+}
+
+/* Specifieke stijlen voor Samsung Galaxy S8+ */
+@media (min-width: 360px) and (max-width: 740px) and (min-resolution: 4dppx) {
+    .ui-btn {
+        top: 5.8rem;
+        right: 4rem;
+        --font-size: 11px;
+        --btn-padding: 12px 16px;
+    }
+
+    .scroll-top-btn {
+        top: 5.8rem;
+        left: 4rem;
+        --font-size: 11px;
+        --btn-padding: 12px 16px;
+    }
+}
+
+/* Specifieke stijlen voor iPads */
+@media (min-width: 768px) and (max-width: 1366px) and (min-resolution: 2dppx) {
+    .ui-btn {
+        top: 8rem;
+        right: 13rem;
+        --font-size: 12px;
+        --btn-padding: 14px 18px;
+    }
+
+    .scroll-top-btn {
+        top: 8rem;
+        left: 13rem;
+        --font-size: 12px;
+        --btn-padding: 14px 18px;
+    }
+}
+
+/* Specifieke stijlen voor iPads HORIZONTAL */
+@media (min-width: 1366px) and (max-width: 768px) and (min-resolution: 2dppx) {
+    .ui-btn {
+        top: 8rem;
+        right: 13rem;
+        --font-size: 12px;
+        --btn-padding: 14px 18px;
+    }
+
+    .scroll-top-btn {
+        top: 20rem;
+        left: 13rem;
+        --font-size: 12px;
+        --btn-padding: 14px 18px;
+    }
+}
+
+/* Specifieke stijlen voor iPhone SE */
+@media (min-width: 375px) and (max-width: 667px) and (min-resolution: 2dppx) {
+    .ui-btn {
+        top: 5.7rem;
+        right: 5rem;
+        --font-size: 10px;
+        --btn-padding: 12px 16px;
+    }
+
+    .scroll-top-btn {
+        top: 5.7rem;
+        left: 5rem;
+        --font-size: 10px;
+        --btn-padding: 12px 16px;
+    }
+}
