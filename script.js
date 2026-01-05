@@ -1,50 +1,26 @@
 // Originele fotogalerie code
 const photos = [
     {
-        main: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
-        alt: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800',
-        caption: 'Mountains at Sunset'
+        main: '/images/MACBOOK1.jpg',
+        alt: '/images/MACBOOK2.jpg',
+        caption: 'MacBook Pro - Aluminum body'
     },
     {
-        main: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800',
-        alt: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800',
-        caption: 'Nature in its glory'
+        main: '/images/GLOSSYCASE1.jpg',
+        alt: '',
+        caption: 'Glossy plastic case'
     },
     {
-        main: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800',
-        alt: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800',
-        caption: 'Adventure awaits'
+        main: '/images/Flower pot textured1.jpg',
+        alt: '/images/Flower pot textured2.jpg',
+        caption: 'Textured flower pot'
     },
     {
-        main: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800',
-        alt: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800',
-        caption: 'Misty forest mornings'
+        main: '/images/Pokemon card design1.jpg',
+        alt: '/images/Pokemon card design2.jpg',
+        caption: 'Pokemon card design'
     },
-    {
-        main: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800',
-        alt: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=800',
-        caption: 'Serenity by the lake'
-    },
-    {
-        main: 'https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5?w=800',
-        alt: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800',
-        caption: 'Majestic waterfalls'
-    },
-    {
-        main: 'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=800',
-        alt: 'https://images.unsplash.com/photo-1682687221038-404cb8830901?w=800',
-        caption: 'Abstract light patterns'
-    },
-    {
-        main: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
-        alt: 'https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?w=800',
-        caption: 'Sunset over the hills'
-    },
-    {
-        main: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=800',
-        alt: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
-        caption: 'Endless desert dunes'
-    }
+    
 ];
 
 let currentIndex = 0;
@@ -54,11 +30,14 @@ function createPhotoCard(photo, index) {
     const card = document.createElement('div');
     card.className = 'photo-card';
     
+    // Verberg de knop als er geen alternatieve afbeelding is
+    const btnDisplay = photo.alt ? '' : 'style="display: none;"';
+    
     card.innerHTML = `
         <div class="photo-wrapper">
-            <img src="${photo.main}" alt="${photo.caption}" class="photo-img" data-main="${photo.main}" data-alt="${photo.alt}">
+            <img src="${photo.main}" alt="${photo.caption}" class="photo-img" data-main="${photo.main}" data-alt="${photo.alt}" data-current="main">
             <canvas class="glitch-canvas"></canvas>
-            <button class="surprise-btn" data-index="${index}">
+            <button class="surprise-btn" data-index="${index}" ${btnDisplay}>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#CCCCCC" stroke-width="2">
                  <path d="M1 10C1 10 4 4 10 4C16 4 19 10 19 10C19 10 16 16 10 16C4 16 1 10 1 10Z" 
                     stroke-linecap="round" 
@@ -76,98 +55,67 @@ function createPhotoCard(photo, index) {
     const glitchCanvas = card.querySelector('.glitch-canvas');
     const glitchCtx = glitchCanvas.getContext('2d');
     
-    btn.addEventListener('click', () => {
-        const currentSrc = img.src;
-        const mainSrc = img.dataset.main;
-        const altSrc = img.dataset.alt;
-        const newSrc = currentSrc.includes(mainSrc) ? altSrc : mainSrc;
-        
-        // Setup canvas
-        const wrapper = img.parentElement;
-        glitchCanvas.width = wrapper.offsetWidth;
-        glitchCanvas.height = wrapper.offsetHeight;
-        glitchCanvas.style.opacity = '1';
-        
-        // Preload nieuwe afbeelding
-        const newImg = new Image();
-        newImg.crossOrigin = "anonymous";
-        newImg.onload = () => {
-            animateDataSwap(img, newImg, glitchCanvas, glitchCtx, () => {
-                img.src = newSrc;
-                glitchCanvas.style.opacity = '0';
-            });
-        };
-        newImg.src = newSrc;
-    });
+    // Alleen event listener toevoegen als er een alternatieve afbeelding is
+    if (photo.alt) {
+        btn.addEventListener('click', () => {
+            const mainSrc = img.dataset.main;
+            const altSrc = img.dataset.alt;
+            const currentState = img.dataset.current;
+            
+            // Bepaal de nieuwe afbeelding op basis van de huidige staat
+            const newSrc = currentState === 'main' ? altSrc : mainSrc;
+            const newState = currentState === 'main' ? 'alt' : 'main';
+            
+            // Verwijder transform tijdens transitie
+            img.style.transform = 'scale(1)';
+            
+            // Setup canvas
+            const wrapper = img.parentElement;
+            glitchCanvas.width = wrapper.offsetWidth;
+            glitchCanvas.height = wrapper.offsetHeight;
+            glitchCanvas.style.opacity = '1';
+            
+            // Preload nieuwe afbeelding
+            const newImg = new Image();
+            newImg.crossOrigin = "anonymous";
+            newImg.onload = () => {
+                animateDataSwap(img, newImg, glitchCanvas, glitchCtx, () => {
+                    img.src = newSrc;
+                    img.dataset.current = newState;
+                    glitchCanvas.style.opacity = '0';
+                    // Reset transform na transitie
+                    img.style.transform = '';
+                });
+            };
+            newImg.src = newSrc;
+        });
+    }
 
     return card;
 }
 
 function animateDataSwap(oldImg, newImg, canvas, ctx, callback) {
-    const pixelSize = 800;
-    const duration = 800;
+    const duration = 600;
     const startTime = Date.now();
     
     function animate() {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
+        // Easing function voor smooth fade
+        const easeProgress = progress < 0.5 
+            ? 2 * progress * progress 
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        const cols = Math.ceil(canvas.width / pixelSize);
-        const rows = Math.ceil(canvas.height / pixelSize);
+        // Teken oude afbeelding (fade out)
+        ctx.globalAlpha = 1 - easeProgress;
+        ctx.drawImage(oldImg, 0, 0, canvas.width, canvas.height);
         
-        for (let i = 0; i < cols; i++) {
-            for (let j = 0; j < rows; j++) {
-                const x = i * pixelSize;
-                const y = j * pixelSize;
-                
-                // Willekeurige offset voor glitch effect
-                const offset = (Math.random() - 0.5) * pixelSize * (1 - progress);
-                
-                // Bepaal welke afbeelding te gebruiken
-                const threshold = (i / cols + j / rows) / 2;
-                const useNew = progress > threshold;
-                
-                // Pixelated effect met fade
-                if (useNew) {
-                    ctx.globalAlpha = Math.min(1, progress * 1.5);
-                    ctx.drawImage(
-                        newImg,
-                        (i / cols) * newImg.width,
-                        (j / rows) * newImg.height,
-                        newImg.width / cols,
-                        newImg.height / rows,
-                        x + offset,
-                        y,
-                        pixelSize,
-                        pixelSize
-                    );
-                } else {
-                    ctx.globalAlpha = 1 - progress * 0.8;
-                    ctx.drawImage(
-                        oldImg,
-                        (i / cols) * oldImg.width,
-                        (j / rows) * oldImg.height,
-                        oldImg.width / cols,
-                        oldImg.height / rows,
-                        x + offset,
-                        y,
-                        pixelSize,
-                        pixelSize
-                    );
-                }
-                
-                // Halftone dots effect
-                if (Math.random() > 0.9) {
-                    const dotSize = pixelSize * 0.3 * (1 - progress);
-                    ctx.fillStyle = `rgba(204, 204, 204, ${0.5 - progress * 0.5})`;
-                    ctx.beginPath();
-                    ctx.arc(x + pixelSize/2, y + pixelSize/2, dotSize, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-        }
+        // Teken nieuwe afbeelding (fade in)
+        ctx.globalAlpha = easeProgress;
+        ctx.drawImage(newImg, 0, 0, canvas.width, canvas.height);
         
         ctx.globalAlpha = 1;
         
@@ -200,10 +148,10 @@ document.getElementById('loadMore').addEventListener('click', loadPhotos);
 
 loadPhotos();
 
-        // Scroll to top functionaliteit
-        document.getElementById('scrollTopBtn').addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
+// Scroll to top functionaliteit
+document.getElementById('scrollTopBtn').addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
